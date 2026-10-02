@@ -11,6 +11,7 @@ from urllib.parse import quote_plus
 
 import numpy as np
 
+from core.paths import get_data_dir
 from actions.argus_file_stamp import write_text_with_stamp
 
 try:
@@ -29,9 +30,7 @@ from config import get_os, is_windows, is_mac, is_linux
 
 
 def _get_base_dir() -> Path:
-    if getattr(sys, "frozen", False):
-        return Path(sys.executable).parent
-    return Path(__file__).resolve().parent.parent
+    return get_data_dir()
 
 
 BASE_DIR        = _get_base_dir()

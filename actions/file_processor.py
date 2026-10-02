@@ -25,6 +25,7 @@ import tempfile
 from pathlib import Path
 from datetime import datetime
 
+from core.paths import get_data_dir
 from google import genai
 
 from actions.argus_file_stamp import mark_created_file, write_text_with_stamp
@@ -35,7 +36,7 @@ def _get_api_key() -> str:
     if env_key:
         return env_key
 
-    config_path = Path(__file__).resolve().parent.parent / "config" / "api_keys.json"
+    config_path = get_data_dir() / "config" / "api_keys.json"
     if config_path.exists():
         with open(config_path, "r", encoding="utf-8") as f:
             return json.load(f).get("gemini_api_key", "")

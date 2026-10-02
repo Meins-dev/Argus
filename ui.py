@@ -13,6 +13,7 @@ import time
 from pathlib import Path
 
 import psutil
+from core.paths import get_data_dir
 
 from PyQt6.QtCore import (
     QEasingCurve, QEvent, QMimeData, QObject, QPointF, QPropertyAnimation,
@@ -38,7 +39,7 @@ def _base_dir() -> Path:
     return Path(__file__).resolve().parent
 
 BASE_DIR   = _base_dir()
-CONFIG_DIR = BASE_DIR / "config"
+CONFIG_DIR = get_data_dir() / "config"
 API_FILE   = CONFIG_DIR / "api_keys.json"
 FONT_DIR   = BASE_DIR / "assets" / "fonts"
 UI_SETTINGS_FILE = Path.home() / ".argus" / "config" / "settings.json"

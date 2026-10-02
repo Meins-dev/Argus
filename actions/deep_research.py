@@ -14,13 +14,12 @@ from pathlib import Path
 from typing import Callable
 from urllib.parse import parse_qs, unquote, urlparse
 
+from core.paths import get_data_dir
 from memory.config_manager import get_gemini_key
 
 
 def _base_dir() -> Path:
-    if getattr(sys, "frozen", False):
-        return Path(sys.executable).parent
-    return Path(__file__).resolve().parent.parent
+    return get_data_dir()
 
 
 BASE_DIR = _base_dir()

@@ -3,8 +3,9 @@ import re
 import time
 from pathlib import Path
 from typing import Any
+from core.paths import get_data_dir
 
-HISTORY_PATH = Path(__file__).resolve().parent / "task_history.json"
+HISTORY_PATH = get_data_dir() / "memory" / "task_history.json"
 MAX_HISTORY = 100
 
 

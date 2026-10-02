@@ -23,6 +23,7 @@ from email.utils import getaddresses
 from pathlib import Path
 from urllib.parse import quote, urlencode
 
+from core.paths import get_data_dir
 
 _SYSTEM = platform.system()
 _FIELD_SEPARATOR = chr(31)
@@ -82,7 +83,7 @@ def _discover_gmail_client_path(explicit_path: str = "") -> Path | None:
     except Exception:
         pass
 
-    project = Path(__file__).resolve().parent.parent
+    project = get_data_dir()
     candidates.extend([
         project / "config" / "gmail_credentials.json",
         project / "config" / "credentials.json",

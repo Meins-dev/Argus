@@ -1,9 +1,9 @@
 import json
 from pathlib import Path
 from datetime import datetime
+from core.paths import get_data_dir
 
-ROOT = Path(__file__).resolve().parent.parent
-STATUS_PATH = ROOT / "tmp" / "argus_status.json"
+STATUS_PATH = get_data_dir() / "tmp" / "argus_status.json"
 
 
 def _ensure_dir():

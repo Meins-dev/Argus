@@ -12,6 +12,7 @@ import time
 from pathlib import Path
 from typing import Optional
 
+from core.paths import get_data_dir
 from memory.config_manager import get_gemini_key
 
 import numpy as np
@@ -47,9 +48,7 @@ from google import genai
 from google.genai import types as gtypes
 
 def _base_dir() -> Path:
-    if getattr(sys, "frozen", False):
-        return Path(sys.executable).parent
-    return Path(__file__).resolve().parent.parent
+    return get_data_dir()
 
 
 _BASE        = _base_dir()

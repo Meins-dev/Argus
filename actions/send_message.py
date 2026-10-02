@@ -9,6 +9,7 @@ import time
 import unicodedata
 from pathlib import Path
 
+from core.paths import get_data_dir
 from actions.safe_text_entry import safe_type_then_enter
 from actions.instagram_browser import (
     prepare_instagram_draft as _controlled_instagram_prepare_draft,
@@ -295,9 +296,7 @@ def _recipient_confirmation_result(platform: str, original: str, message: str, c
     )
 
 def _base_dir() -> Path:
-    if getattr(sys, "frozen", False):
-        return Path(sys.executable).parent
-    return Path(__file__).resolve().parent.parent
+    return get_data_dir()
 
 def _get_os() -> str:
     try:

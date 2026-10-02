@@ -1,11 +1,16 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+import sys
 
 a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('assets/fonts', 'assets/fonts')],
+    datas=[
+        ('assets/fonts', 'assets/fonts'),
+        ('core/prompt.txt', 'core'),
+        ('.env.example', '.'),
+    ],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -46,5 +51,10 @@ app = BUNDLE(
     coll,
     name='ARGUS.app',
     icon=None,
-    bundle_identifier=None,
-)
+    bundle_identifier='com.argus.desktop',
+    info_plist={
+        'CFBundleName': 'Argus',
+        'CFBundleShortVersionString': '0.1.0',
+        'CFBundleVersion': '0.1.0',
+    },
+) if sys.platform == 'darwin' else coll

@@ -9,6 +9,7 @@ import time
 import random
 from pathlib import Path
 
+from core.paths import get_data_dir
 from actions.argus_file_stamp import mark_created_file
 from actions.safe_text_entry import safe_type_text
 
@@ -27,9 +28,7 @@ except ImportError:
     _PYPERCLIP = False
 
 def _base_dir() -> Path:
-    if getattr(sys, "frozen", False):
-        return Path(sys.executable).parent
-    return Path(__file__).resolve().parent.parent
+    return get_data_dir()
 
 
 _BASE         = _base_dir()

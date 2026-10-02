@@ -9,6 +9,7 @@ import platform
 from pathlib import Path
 from datetime import datetime
 
+from core.paths import get_data_dir
 from actions.argus_file_stamp import mark_created_file
 
 try:
@@ -21,9 +22,7 @@ _OS = platform.system()  # "Windows" | "Darwin" | "Linux"
 
 
 def _get_base_dir() -> Path:
-    if getattr(sys, "frozen", False):
-        return Path(sys.executable).parent
-    return Path(__file__).resolve().parent.parent
+    return get_data_dir()
 
 def _get_api_key() -> str:
     path = _get_base_dir() / "config" / "api_keys.json"

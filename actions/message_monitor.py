@@ -3,14 +3,13 @@ import re
 import subprocess
 from pathlib import Path
 
+from core.paths import get_data_dir
 from actions.instagram_browser import read_instagram_open_chat
 from actions.send_message import _best_name_matches, _load_contacts_candidates
 
 
 def _base_dir() -> Path:
-    if getattr(__import__("sys"), "frozen", False):
-        return Path(__import__("sys").executable).parent
-    return Path(__file__).resolve().parent.parent
+    return get_data_dir()
 
 
 def _get_os() -> str:

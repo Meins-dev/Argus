@@ -12,6 +12,7 @@ from google import genai
 from google.genai import types
 from api import status as argus_status
 from core.argus_client import ArgusClient
+from core.paths import get_data_dir, get_resource_dir
 from memory.memory_manager import (
     load_memory, update_memory, format_memory_for_prompt,
 )
@@ -61,16 +62,21 @@ request_deep_research = _lazy_action("actions.deep_research", "request_deep_rese
 
 
 def get_base_dir():
-    if getattr(sys, "frozen", False):
-        return Path(sys.executable).parent
-    return Path(__file__).resolve().parent
+    return get_resource_dir()
 
 
 def _load_dotenv():
     """Load .env file if it exists. Silently skip if not found."""
     try:
+        from shutil import copyfile
         from dotenv import load_dotenv
-        load_dotenv(BASE_DIR / ".env")
+        env_path = get_data_dir() / ".env" if getattr(sys, "frozen", False) else BASE_DIR / ".env"
+        if getattr(sys, "frozen", False):
+            env_path.parent.mkdir(parents=True, exist_ok=True)
+            example_path = BASE_DIR / ".env.example"
+            if not env_path.exists() and example_path.exists():
+                copyfile(example_path, env_path)
+        load_dotenv(env_path)
     except ImportError:
         # python-dotenv not installed — rely on already-set env vars
         pass
@@ -78,7 +84,7 @@ def _load_dotenv():
 
 BASE_DIR        = get_base_dir()
 _load_dotenv()
-API_CONFIG_PATH = BASE_DIR / "config" / "api_keys.json"
+API_CONFIG_PATH = get_data_dir() / "config" / "api_keys.json"
 PROMPT_PATH     = BASE_DIR / "core" / "prompt.txt"
 LIVE_MODEL = "models/gemini-2.5-flash-native-audio-preview-12-2025"
 CHANNELS            = 1

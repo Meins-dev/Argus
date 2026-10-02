@@ -1,8 +1,9 @@
 # config/__init__.py
 import json, os, platform
 from pathlib import Path
+from core.paths import get_data_dir
 
-_CONFIG_PATH = Path(__file__).parent / "api_keys.json"
+_CONFIG_PATH = get_data_dir() / "config" / "api_keys.json"
 
 def get_config() -> dict:
     try:
