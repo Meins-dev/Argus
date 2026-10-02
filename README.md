@@ -16,13 +16,23 @@ your Python version before continuing:
 python --version
 ```
 
+## Releases
+
+Versioning starts at **0.1.0**. The desktop build workflow produces a Windows
+installer, a macOS disk image, and a Linux Debian package when a `v*` tag is
+pushed. It attaches SHA-256 checksums to the GitHub release. The
+[release workflow](.github/workflows/release.yml) is configured, but no binary
+release is published yet: the canonical public repository still needs its
+Argus URL selected, then `v0.1.0` must be pushed there. Source installation
+remains available after cloning the canonical repository.
+
 ## Quick start (Windows, macOS, Linux)
 
 In Terminal, run:
 
 ```bash
-git clone https://github.com/MAL19INDUSTRIES/ARGUS-OS-V.2.git
-cd ARGUS-OS-V.2
+git clone <canonical Argus repository URL> Argus
+cd Argus
 python scripts/setup_argus.py
 ```
 
@@ -73,9 +83,10 @@ npm run dev
 Production templates are included for Fly.io (`fly.toml`), Render
 (`render.yaml`), and Vercel (`web/vercel.json`). Configure `DATABASE_URL`,
 `REDIS_URL`, `JWT_SECRET`, `ARGUS_ENCRYPTION_KEY`, and `CORS_ORIGINS` on the
-API host. Configure `NEXT_PUBLIC_API_URL` and `NEXT_PUBLIC_WS_URL` on Vercel.
-The deployment workflow runs manually after the Fly and Vercel repository
-secrets have been added.
+API host. Set `NEXT_PUBLIC_API_BASE_URL` to the API's public base URL in the
+web deployment; the client derives both HTTP and WebSocket URLs from it. Set
+`CORS_ORIGINS` to the deployed web origin. The deployment workflow runs
+manually after the Fly and Vercel repository secrets have been added.
 
 ## Manual setup
 
@@ -125,10 +136,34 @@ installs the same `argus` command through the standard Python package entry poin
 
 ## Documentation
 
+- [Changelog](CHANGELOG.md)
 - [Usage guide](docs/USAGE.md)
 - [Tutorial](docs/TUTORIAL.md)
 - [Complete QA and bug-audit guide](docs/QA.md)
 - [Contribution notes](CONTRIBUTING.md)
+
+## Availability
+
+- **Release:** v0.1.0 packaging and publish steps are configured in the
+  [release workflow](.github/workflows/release.yml). Installers and checksums
+  will exist only after the canonical Argus repository URL is selected, the tag
+  is pushed, and CI succeeds.
+- **Desktop requirements:** the [measurement report](docs/benchmarks/desktop.md)
+  links to the [raw samples](docs/benchmarks/desktop-0.1.0-20261002T234124Z.csv).
+  It contains a real 60-second idle result; typical/intense scenarios and
+  official minimum/recommended hardware remain undetermined.
+- **Web capacity:** the [load report](docs/benchmarks/web.md) links to the
+  [raw stage summary](docs/benchmarks/web-0.1.0-native-api-sqlite-20261002T233159Z.json).
+  Native SQLite/API HTTP load reached 40 sessions without crossing the test
+  threshold; no saturation was observed through 40 and the exact maximum is
+  unknown. Docker Compose and PostgreSQL/Redis capacity remain unmeasured.
+- **Policies:** [privacy](PRIVACY.md), [terms](TERMS.md) and
+  [security](SECURITY.md) are published as code-based models; legal review is
+  still required before commercial use.
+- **Public URLs:** the canonical repository slug and production website domain
+  are not selected here. Configure `PUBLIC_ARGUS_REPOSITORY_URL` and
+  `PUBLIC_ARGUS_SITE_URL` in the Astro site's `.env.example` after those
+  decisions; the latter supplies the site's canonical/Open Graph base URL.
 
 ## Configuration files
 

@@ -8,8 +8,8 @@ export type User = {
 export type Session = { access_token: string; token_type: string; user: User };
 export type Action = { name: string; description: string };
 
-const HTTP_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
-export const WS_URL = (process.env.NEXT_PUBLIC_WS_URL || HTTP_URL.replace(/^http/, "ws")).replace(/\/$/, "");
+const HTTP_URL = (process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000").replace(/\/$/, "");
+export const WS_URL = HTTP_URL.replace(/^http/, "ws");
 
 export function getToken() {
   return typeof window === "undefined" ? null : window.localStorage.getItem("argus_session");

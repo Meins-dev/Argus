@@ -25,6 +25,7 @@ class Settings:
     jwt_secret: str = os.environ.get("JWT_SECRET", "local-development-only-change-me")
     encryption_key: str = os.environ.get("ARGUS_ENCRYPTION_KEY", "")
     access_token_minutes: int = int(os.environ.get("ACCESS_TOKEN_MINUTES", "1440"))
+    data_retention_days: int = int(os.environ.get("ARGUS_DATA_RETENTION_DAYS", "90"))
     cors_origins: tuple[str, ...] = _csv(
         "CORS_ORIGINS",
         "http://localhost:3000,http://127.0.0.1:3000",
@@ -38,6 +39,8 @@ class Settings:
     }
 
     def validate_production(self) -> None:
+        if self.data_retention_days < 1:
+            raise RuntimeError("ARGUS_DATA_RETENTION_DAYS must be at least 1")
         if self.environment != "production":
             return
         if self.jwt_secret == "local-development-only-change-me":

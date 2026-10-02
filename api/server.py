@@ -23,6 +23,7 @@ from .config import settings
 from .database import SessionLocal, get_db, init_db
 from .models import User
 from .rate_limit import limiter
+from .retention import purge_expired_user_data
 from .repositories import add_chat_message, recent_chat_messages
 from .schemas import (
     ChatRequest,
@@ -87,22 +88,44 @@ class LiveSessionRegistry:
 live_sessions = LiveSessionRegistry()
 
 
+async def _retention_loop() -> None:
+    while True:
+        await asyncio.sleep(24 * 60 * 60)
+        try:
+            await asyncio.to_thread(
+                purge_expired_user_data,
+                settings.data_retention_days,
+            )
+        except Exception as exc:
+            print(f"[Retention] Cleanup failed: {exc}")
+
+
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     settings.validate_production()
     if settings.auto_create_tables:
         await asyncio.to_thread(init_db)
+    try:
+        await asyncio.to_thread(
+            purge_expired_user_data,
+            settings.data_retention_days,
+        )
+    except Exception as exc:
+        print(f"[Retention] Initial cleanup failed: {exc}")
     await limiter.connect()
+    retention_task = asyncio.create_task(_retention_loop())
     try:
         yield
     finally:
+        retention_task.cancel()
+        await asyncio.gather(retention_task, return_exceptions=True)
         await live_sessions.close_all()
         await limiter.close()
 
 
 app = FastAPI(
     title="ARGUS Cloud API",
-    version="1.0.0",
+    version="0.1.0",
     lifespan=lifespan,
 )
 app.add_middleware(
