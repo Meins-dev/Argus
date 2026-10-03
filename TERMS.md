@@ -37,7 +37,8 @@ devem ser verificadas por uma pessoa qualificada.
 
 Mantenha o sistema atualizado, proteja as chaves e configure segredos próprios
 antes de expor o serviço web. Os valores locais de exemplo não são credenciais
-de produção. Consulte `SECURITY.md` para reportar vulnerabilidades.
+de produção. Para reportar vulnerabilidades, consulte `SECURITY.pt-BR.md` em
+português ou `SECURITY.md` em inglês.
 
 ## 6. Dados e privacidade
 

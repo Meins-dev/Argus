@@ -82,7 +82,7 @@ No modo desktop, o Argus usa os armazenamentos locais da máquina. O serviço we
 suporta retenção configurável de 90 dias, por padrão, para mensagens de chat,
 histórico de tarefas e cache de respostas. **Não há telemetria de produto** no
 código auditado. Leia a [política de privacidade](PRIVACY.md), os
-[termos de uso](TERMS.md) e as [instruções de segurança](SECURITY.md). Os
+  [termos de uso](TERMS.md) e a [política de segurança](SECURITY.pt-BR.md). Os
 documentos jurídicos são modelos e precisam de revisão profissional antes de
 uso comercial.
 
@@ -108,7 +108,7 @@ de desempenho em outro hardware ou configuração.
 - [Histórico de versões](CHANGELOG.md)
 - [QA e auditoria](docs/QA.md)
 - [Contribuição](CONTRIBUTING.md)
-- [Privacidade](PRIVACY.md) · [Termos](TERMS.md) · [Segurança](SECURITY.md)
+- [Privacidade](PRIVACY.md) · [Termos](TERMS.md) · [Segurança](SECURITY.pt-BR.md)
 
 ## Identidade visual
 
