@@ -1,0 +1,1 @@
+"""Hosted ARGUS API package."""
