@@ -150,7 +150,7 @@ installs the same `argus` command through the standard Python package entry poin
   [GitHub releases page](https://github.com/anonymandk/Argus/releases) has no
   installers yet; publish tag `v0.1.0` and let CI complete to create them.
 - **Desktop requirements:** the [measurement report](docs/benchmarks/desktop.md)
-  links to the [raw samples](docs/benchmarks/desktop-0.1.0-20261002T234124Z.csv).
+  links to the [raw samples](docs/benchmarks/desktop-0.1.0-20261002T234224Z.csv).
   It contains a real 60-second idle result; typical/intense scenarios and
   official minimum/recommended hardware remain undetermined.
 - **Web capacity:** the [load report](docs/benchmarks/web.md) links to the
