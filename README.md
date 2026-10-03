@@ -1,35 +1,49 @@
-# ARGUS
+<div align="center">
+  <img src="assets/branding/argus-github-banner.png" alt="Argus — IA que entende e entra em ação" width="100%">
+  <br>
+  <a href="https://github.com/anonymandk/Argus/releases">Ver releases</a>
+  · <a href="#instalar-do-código-fonte">Instalar pelo código-fonte</a>
+  · <a href="#documentação">Documentação</a>
+  <p><strong>Versão 0.1.0 · pré-lançamento</strong></p>
+</div>
 
-Local Gemini Live desktop assistant with a PyQt6 interface, voice interaction, detachable panels, and optional browser, file, screen, and messaging tools.
+**Argus é seu assistente pessoal de IA para desktop.** Converse por voz ou
+texto, pesquise, trabalhe com arquivos e transforme materiais em apresentações
+editáveis — em um só espaço de trabalho.
 
-ARGUS also includes a dedicated presentation studio that creates, edits,
-redesigns, and extends editable widescreen `.pptx` decks from documents, data,
-images, audio, and video, with optional PDF export. See the
-[usage guide](docs/USAGE.md#6-powerpoint-presentations) for examples.
+Ele combina Gemini Live com ferramentas locais opcionais para ajudar você a
+sair da intenção e chegar ao resultado, mantendo as ações do computador sob seu
+controle.
 
-## Requirements
+## O que você pode fazer
 
-You need **Python 3.11 or newer** installed to set up and run ARGUS. Confirm
-your Python version before continuing:
+- **Conversar naturalmente:** use voz com Gemini Live ou envie instruções por
+  texto.
+- **Pesquisar e trabalhar com contexto:** encontre informações e use arquivos,
+  tela e navegador conforme as permissões que você habilitar.
+- **Criar apresentações:** monte e edite apresentações widescreen `.pptx` a
+  partir de documentos, dados, imagens, áudio e vídeo, com exportação opcional
+  para PDF.
+- **Escolher como executar:** use o aplicativo desktop e suas ferramentas
+  locais ou explore o serviço web FastAPI com cliente Next.js.
 
-```bash
-python --version
-```
+As integrações opcionais dependem de credenciais, permissões do sistema e
+aplicativos instalados. O uso do Gemini requer uma chave de API Google; cotas e
+eventuais cobranças seguem as condições da sua conta Google.
 
-## Releases
+## Começar
 
-Versioning starts at **0.1.0**. The desktop build workflow produces a Windows
-installer, a macOS disk image, and a Linux Debian package when a `v*` tag is
-pushed. It attaches SHA-256 checksums to the GitHub release. The
-[release workflow](.github/workflows/release.yml) is configured, but no binary
-release is published yet: push the `v0.1.0` tag to the canonical repository and
-let its CI workflow complete. See the
-[Argus releases page](https://github.com/anonymandk/Argus/releases). Source
-installation remains available from the canonical repository.
+### Releases
 
-## Quick start (Windows, macOS, Linux)
+O workflow de release prepara instaladores para Windows, macOS e Linux com
+checksums SHA-256. **Os instaladores da versão 0.1.0 ainda não foram
+publicados.** Acesse a [página de releases](https://github.com/anonymandk/Argus/releases)
+para acompanhar a primeira publicação. A instalação pelo código-fonte já está
+disponível:
 
-In Terminal, run:
+### Instalar do código-fonte
+
+Requer Python 3.11 ou mais recente.
 
 ```bash
 git clone https://github.com/anonymandk/Argus.git Argus
@@ -37,152 +51,70 @@ cd Argus
 python scripts/setup_argus.py
 ```
 
-On Windows, you can double-click `scripts/setup_argus.bat` instead.
-
-Open `.env`, add your `GEMINI_API_KEY`, then launch ARGUS:
+No Windows, você também pode iniciar `scripts/setup_argus.bat`. Depois da
+instalação, adicione sua chave `GEMINI_API_KEY` ao arquivo `.env` e execute:
 
 ```bash
 argus
 ```
 
-You only need to run setup once. Activate `.venv` when opening a new terminal,
-then type `argus`.
+O núcleo do Argus funciona em Windows, macOS e Linux. Algumas integrações
+dependem dos recursos e permissões disponíveis em cada sistema.
 
-ARGUS's core UI, Gemini connection, presentations, research, files, and CLI are
-cross-platform. Some computer-control, email, media, and browser integrations
-depend on permissions and available applications on each operating system.
+## Serviço web local
 
-## Hosted web application
-
-The repository also contains a multi-user FastAPI service and a Next.js web
-client. Hosted sessions use Postgres for user-scoped memory and configuration,
-Redis for request quotas, encrypted per-user Gemini keys, and Gemini Live over
-an authenticated WebSocket. The desktop launcher continues to use its local
-stores and full local action inventory.
-
-Start the complete local web stack with Docker:
+O repositório também inclui uma API FastAPI multiusuário e uma interface Next.js.
+Para subir o conjunto local com Docker:
 
 ```bash
 docker compose up --build
 ```
 
-Then open `http://localhost:3000`. To run each service directly:
+Depois, abra `http://localhost:3000`. Consulte o [guia de uso](docs/USAGE.md)
+para configuração da API, do cliente web e dos modelos de deploy. A presença
+dos templates de deploy não significa que exista um serviço hospedado público.
 
-```bash
-# API
-cp .env.example .env
-alembic upgrade head
-uvicorn api.server:app --reload
+## Privacidade e segurança
 
-# Web client
-cd web
-cp .env.example .env.local
-npm install
-npm run dev
-```
+No modo desktop, o Argus usa os armazenamentos locais da máquina. O serviço web
+suporta retenção configurável de 90 dias, por padrão, para mensagens de chat,
+histórico de tarefas e cache de respostas. **Não há telemetria de produto** no
+código auditado. Leia a [política de privacidade](PRIVACY.md), os
+[termos de uso](TERMS.md) e as [instruções de segurança](SECURITY.md). Os
+documentos jurídicos são modelos e precisam de revisão profissional antes de
+uso comercial.
 
-Production templates are included for Fly.io (`fly.toml`), Render
-(`render.yaml`), and Vercel (`web/vercel.json`). Configure `DATABASE_URL`,
-`REDIS_URL`, `JWT_SECRET`, `ARGUS_ENCRYPTION_KEY`, and `CORS_ORIGINS` on the
-API host. Set `NEXT_PUBLIC_API_BASE_URL` to the API's public base URL in the
-web deployment; the client derives both HTTP and WebSocket URLs from it. Set
-`CORS_ORIGINS` to the deployed web origin. The deployment workflow runs
-manually after the Fly and Vercel repository secrets have been added.
+## Estado do projeto
 
-## Manual setup
+- **Release:** SemVer `0.1.0`, changelog e workflow configurados; binários
+  dependem da publicação da tag e da conclusão do CI.
+- **Desktop:** foi medida uma execução ociosa de 60 segundos em Linux CachyOS,
+  com CPU média de 17,236% de um núcleo lógico e RSS médio de 172,859 MiB. Os
+  cenários de uso típico/intenso e os requisitos oficiais ainda não foram
+  medidos. Veja o [relatório e os dados brutos](docs/benchmarks/desktop.md).
+- **API web:** o teste local com SQLite chegou a 40 sessões sem saturação
+  observada; o máximo não foi determinado. O deploy Docker Compose e os limites
+  de produção ainda não foram medidos. Veja o [relatório de carga](docs/benchmarks/web.md).
 
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-python3 -m pip install --upgrade pip
-python3 -m pip install -r requirements.txt
-cp .env.example .env
-./scripts/install_argus_cli.sh
-argus
-```
+Esses resultados descrevem apenas os ambientes testados; não são uma garantia
+de desempenho em outro hardware ou configuração.
 
-Set `GEMINI_API_KEY` in `.env` before launch. Optional settings such as voice and local API keys are documented in `.env.example`.
+## Documentação
 
-### Launch with `argus`
-
-The CLI launcher is included in this repository. After cloning and completing
-the one-time setup, install it for your user with:
-
-```bash
-./scripts/install_argus_cli.sh
-```
-
-Open a new terminal (or reload your shell profile), then start ARGUS with:
-
-```bash
-argus
-```
-
-Before packaging or releasing the desktop app, run the side-effect-safe
-capability audit:
-
-```bash
-argus --self-test
-```
-
-The audit exercises voice/tool contracts, messaging routing and approval
-boundaries, a local browser interaction, isolated file operations, vision,
-agent recovery, and memory. It never sends a real message or performs a live
-desktop mutation. Results that still require a person, account, or physical
-device are labeled `LIVE CHECK REQUIRED`, and a JSON report is written under
-`.qa-artifacts/`.
-
-Alternatively, from an activated virtual environment, `python3 -m pip install -e .`
-installs the same `argus` command through the standard Python package entry point.
-
-## Documentation
-
-- [Changelog](CHANGELOG.md)
-- [Usage guide](docs/USAGE.md)
+- [Guia de uso](docs/USAGE.md)
 - [Tutorial](docs/TUTORIAL.md)
-- [Complete QA and bug-audit guide](docs/QA.md)
-- [Contribution notes](CONTRIBUTING.md)
+- [Histórico de versões](CHANGELOG.md)
+- [QA e auditoria](docs/QA.md)
+- [Contribuição](CONTRIBUTING.md)
+- [Privacidade](PRIVACY.md) · [Termos](TERMS.md) · [Segurança](SECURITY.md)
 
-## Availability
+## Identidade visual
 
-- **Release:** v0.1.0 packaging and publish steps are configured in the
-  [release workflow](.github/workflows/release.yml). The
-  [GitHub releases page](https://github.com/anonymandk/Argus/releases) has no
-  installers yet; publish tag `v0.1.0` and let CI complete to create them.
-- **Desktop requirements:** the [measurement report](docs/benchmarks/desktop.md)
-  links to the [raw samples](docs/benchmarks/desktop-0.1.0-20261002T234224Z.csv).
-  It contains a real 60-second idle result; typical/intense scenarios and
-  official minimum/recommended hardware remain undetermined.
-- **Web capacity:** the [load report](docs/benchmarks/web.md) links to the
-  [raw stage summary](docs/benchmarks/web-0.1.0-native-api-sqlite-20261002T233159Z.json).
-  Native SQLite/API HTTP load reached 40 sessions without crossing the test
-  threshold; no saturation was observed through 40 and the exact maximum is
-  unknown. Docker Compose and PostgreSQL/Redis capacity remain unmeasured.
-- **Policies:** [privacy](PRIVACY.md), [terms](TERMS.md) and
-  [security](SECURITY.md) are published as code-based models; legal review is
-  still required before commercial use.
-- **Public URLs:** the canonical repository is
-  [anonymandk/Argus](https://github.com/anonymandk/Argus). The production
-  website domain still needs to be selected and supplied to the Astro site's
-  `PUBLIC_ARGUS_SITE_URL` setting.
+- [Logo vetorial (SVG)](assets/branding/argus-mark.svg)
+- [Avatar GitHub (PNG, 1024 × 1024)](assets/branding/argus-github-avatar.png)
+- [Imagem social GitHub (PNG, 1280 × 640)](assets/branding/argus-github-banner.png)
+- [Fonte vetorial da imagem social](assets/branding/argus-github-banner.svg)
 
-## Configuration files
+## Licença
 
-Template files are included for local setup:
-
-- `.env.example`
-- `config/api_keys.example.json`
-- `config/layout_settings.example.json`
-- `config/ui_settings.example.json`
-- `memory/long_term.example.json`
-- `memory/task_history.example.json`
-
-## Publishing checklist
-
-- Keep `.env` and local secret files out of git.
-- Do not commit `memory/long_term.json` or `config/api_keys.json`.
-- Run `python3 -m py_compile main.py ui.py` before tagging a release.
-
-## License
-
-MIT License, see [LICENSE](LICENSE).
+MIT — consulte [LICENSE](LICENSE).
