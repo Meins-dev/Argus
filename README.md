@@ -22,16 +22,17 @@ Versioning starts at **0.1.0**. The desktop build workflow produces a Windows
 installer, a macOS disk image, and a Linux Debian package when a `v*` tag is
 pushed. It attaches SHA-256 checksums to the GitHub release. The
 [release workflow](.github/workflows/release.yml) is configured, but no binary
-release is published yet: the canonical public repository still needs its
-Argus URL selected, then `v0.1.0` must be pushed there. Source installation
-remains available after cloning the canonical repository.
+release is published yet: push the `v0.1.0` tag to the canonical repository and
+let its CI workflow complete. See the
+[Argus releases page](https://github.com/anonymandk/Argus/releases). Source
+installation remains available from the canonical repository.
 
 ## Quick start (Windows, macOS, Linux)
 
 In Terminal, run:
 
 ```bash
-git clone <canonical Argus repository URL> Argus
+git clone https://github.com/anonymandk/Argus.git Argus
 cd Argus
 python scripts/setup_argus.py
 ```
@@ -145,9 +146,9 @@ installs the same `argus` command through the standard Python package entry poin
 ## Availability
 
 - **Release:** v0.1.0 packaging and publish steps are configured in the
-  [release workflow](.github/workflows/release.yml). Installers and checksums
-  will exist only after the canonical Argus repository URL is selected, the tag
-  is pushed, and CI succeeds.
+  [release workflow](.github/workflows/release.yml). The
+  [GitHub releases page](https://github.com/anonymandk/Argus/releases) has no
+  installers yet; publish tag `v0.1.0` and let CI complete to create them.
 - **Desktop requirements:** the [measurement report](docs/benchmarks/desktop.md)
   links to the [raw samples](docs/benchmarks/desktop-0.1.0-20261002T234124Z.csv).
   It contains a real 60-second idle result; typical/intense scenarios and
@@ -160,10 +161,10 @@ installs the same `argus` command through the standard Python package entry poin
 - **Policies:** [privacy](PRIVACY.md), [terms](TERMS.md) and
   [security](SECURITY.md) are published as code-based models; legal review is
   still required before commercial use.
-- **Public URLs:** the canonical repository slug and production website domain
-  are not selected here. Configure `PUBLIC_ARGUS_REPOSITORY_URL` and
-  `PUBLIC_ARGUS_SITE_URL` in the Astro site's `.env.example` after those
-  decisions; the latter supplies the site's canonical/Open Graph base URL.
+- **Public URLs:** the canonical repository is
+  [anonymandk/Argus](https://github.com/anonymandk/Argus). The production
+  website domain still needs to be selected and supplied to the Astro site's
+  `PUBLIC_ARGUS_SITE_URL` setting.
 
 ## Configuration files
 
