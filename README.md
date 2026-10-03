@@ -1,49 +1,49 @@
 <div align="center">
-  <img src="assets/branding/argus-github-banner.png" alt="Argus — IA que entende e entra em ação" width="100%">
+  <a href="README.md"><strong>English</strong></a> · <a href="README.pt-BR.md">Português (Brasil)</a>
+  <br><br>
+  <img src="assets/branding/argus-github-banner-en.png" alt="Argus — AI that understands and takes action" width="100%">
   <br>
-  <a href="https://github.com/anonymandk/Argus/releases">Ver releases</a>
-  · <a href="#instalar-do-código-fonte">Instalar pelo código-fonte</a>
-  · <a href="#documentação">Documentação</a>
-  <p><strong>Versão 0.1.0 · pré-lançamento</strong></p>
+  <a href="https://github.com/anonymandk/Argus/releases">Explore releases</a>
+  · <a href="#install-from-source">Install from source</a>
+  · <a href="#documentation">Documentation</a>
+  <p><strong>Version 0.1.0 · pre-release</strong></p>
 </div>
 
-**Argus é seu assistente pessoal de IA para desktop.** Converse por voz ou
-texto, pesquise, trabalhe com arquivos e transforme materiais em apresentações
-editáveis — em um só espaço de trabalho.
+**Argus is your personal AI assistant for desktop.** Talk naturally, research,
+work with files, and turn source material into editable presentations—all from
+one workspace.
 
-Ele combina Gemini Live com ferramentas locais opcionais para ajudar você a
-sair da intenção e chegar ao resultado, mantendo as ações do computador sob seu
-controle.
+Argus brings Gemini Live together with optional local tools, helping you move
+from an idea to a finished task while keeping computer actions under your
+control.
 
-## O que você pode fazer
+## What you can do
 
-- **Conversar naturalmente:** use voz com Gemini Live ou envie instruções por
-  texto.
-- **Pesquisar e trabalhar com contexto:** encontre informações e use arquivos,
-  tela e navegador conforme as permissões que você habilitar.
-- **Criar apresentações:** monte e edite apresentações widescreen `.pptx` a
-  partir de documentos, dados, imagens, áudio e vídeo, com exportação opcional
-  para PDF.
-- **Escolher como executar:** use o aplicativo desktop e suas ferramentas
-  locais ou explore o serviço web FastAPI com cliente Next.js.
+- **Talk naturally:** use Gemini Live voice conversations or send instructions
+  by text.
+- **Work with context:** research the web and use files, screen context, and
+  browser tools when you enable the required permissions.
+- **Create presentations:** build and edit widescreen `.pptx` decks from
+  documents, data, images, audio, and video, with optional PDF export.
+- **Choose how to run it:** use the desktop app and its local tools, or explore
+  the FastAPI service with its Next.js web client.
 
-As integrações opcionais dependem de credenciais, permissões do sistema e
-aplicativos instalados. O uso do Gemini requer uma chave de API Google; cotas e
-eventuais cobranças seguem as condições da sua conta Google.
+Optional integrations depend on your credentials, system permissions, and
+installed applications. Gemini Live requires a Google API key; quotas and any
+charges depend on your Google account.
 
-## Começar
+## Get started
 
 ### Releases
 
-O workflow de release prepara instaladores para Windows, macOS e Linux com
-checksums SHA-256. **Os instaladores da versão 0.1.0 ainda não foram
-publicados.** Acesse a [página de releases](https://github.com/anonymandk/Argus/releases)
-para acompanhar a primeira publicação. A instalação pelo código-fonte já está
-disponível:
+The release workflow builds installers for Windows, macOS, and Linux and
+publishes SHA-256 checksums. **Version 0.1.0 installers have not been published
+yet.** Visit the [Argus releases page](https://github.com/anonymandk/Argus/releases)
+for the first binary release, or install from source now:
 
-### Instalar do código-fonte
+### Install from source
 
-Requer Python 3.11 ou mais recente.
+Python 3.11 or newer is required.
 
 ```bash
 git clone https://github.com/anonymandk/Argus.git Argus
@@ -51,70 +51,74 @@ cd Argus
 python scripts/setup_argus.py
 ```
 
-No Windows, você também pode iniciar `scripts/setup_argus.bat`. Depois da
-instalação, adicione sua chave `GEMINI_API_KEY` ao arquivo `.env` e execute:
+On Windows, you can also run `scripts/setup_argus.bat`. After setup, add your
+`GEMINI_API_KEY` to `.env` and start Argus:
 
 ```bash
 argus
 ```
 
-O núcleo do Argus funciona em Windows, macOS e Linux. Algumas integrações
-dependem dos recursos e permissões disponíveis em cada sistema.
+The core app runs on Windows, macOS, and Linux. Individual integrations depend
+on each system's available applications and permissions.
 
-## Serviço web local
+## Run the web service locally
 
-O repositório também inclui uma API FastAPI multiusuário e uma interface Next.js.
-Para subir o conjunto local com Docker:
+The repository also includes a multi-user FastAPI service and a Next.js web
+client. Start the local stack with Docker:
 
 ```bash
 docker compose up --build
 ```
 
-Depois, abra `http://localhost:3000`. Consulte o [guia de uso](docs/USAGE.md)
-para configuração da API, do cliente web e dos modelos de deploy. A presença
-dos templates de deploy não significa que exista um serviço hospedado público.
+Then open `http://localhost:3000`. See the [usage guide](docs/USAGE.md) for API,
+web client, and deployment configuration. Deployment templates are provided;
+they do not mean that a public hosted service is currently available.
 
-## Privacidade e segurança
+## Privacy and security
 
-No modo desktop, o Argus usa os armazenamentos locais da máquina. O serviço web
-suporta retenção configurável de 90 dias, por padrão, para mensagens de chat,
-histórico de tarefas e cache de respostas. **Não há telemetria de produto** no
-código auditado. Leia a [política de privacidade](PRIVACY.md), os
-[termos de uso](TERMS.md) e as [instruções de segurança](SECURITY.md). Os
-documentos jurídicos são modelos e precisam de revisão profissional antes de
-uso comercial.
+The desktop app uses local storage on your computer. The web service supports
+configurable retention, defaulting to 90 days for chat messages, task history,
+and answer cache records. **The audited code contains no product telemetry.**
+Read the [privacy policy](PRIVACY.md), [terms of use](TERMS.md), and
+[security policy](SECURITY.md). The legal documents are templates and need
+professional review before commercial use.
 
-## Estado do projeto
+## Project status
 
-- **Release:** SemVer `0.1.0`, changelog e workflow configurados; binários
-  dependem da publicação da tag e da conclusão do CI.
-- **Desktop:** foi medida uma execução ociosa de 60 segundos em Linux CachyOS,
-  com CPU média de 17,236% de um núcleo lógico e RSS médio de 172,859 MiB. Os
-  cenários de uso típico/intenso e os requisitos oficiais ainda não foram
-  medidos. Veja o [relatório e os dados brutos](docs/benchmarks/desktop.md).
-- **API web:** o teste local com SQLite chegou a 40 sessões sem saturação
-  observada; o máximo não foi determinado. O deploy Docker Compose e os limites
-  de produção ainda não foram medidos. Veja o [relatório de carga](docs/benchmarks/web.md).
+- **Release:** SemVer `0.1.0`, changelog, and installer workflow are configured.
+  Binaries require publishing the tag and completing CI.
+- **Desktop:** a 60-second idle sample on CachyOS Linux measured 17.236% average
+  CPU use of one logical core and 172.859 MiB average RSS. Typical and intense
+  scenarios, and official hardware requirements, have not been measured. See
+  the [benchmark report and raw data](docs/benchmarks/desktop.md).
+- **Web API:** a local SQLite test reached 40 concurrent sessions without
+  observed saturation; the maximum was not determined. Docker Compose and
+  production resource limits have not been measured. See the
+  [load report](docs/benchmarks/web.md).
 
-Esses resultados descrevem apenas os ambientes testados; não são uma garantia
-de desempenho em outro hardware ou configuração.
+These results describe only the tested environments and are not a performance
+guarantee for other hardware or configurations.
 
-## Documentação
+## Documentation
 
-- [Guia de uso](docs/USAGE.md)
+- [Usage guide](docs/USAGE.md)
 - [Tutorial](docs/TUTORIAL.md)
-- [Histórico de versões](CHANGELOG.md)
-- [QA e auditoria](docs/QA.md)
-- [Contribuição](CONTRIBUTING.md)
-- [Privacidade](PRIVACY.md) · [Termos](TERMS.md) · [Segurança](SECURITY.md)
+- [Changelog](CHANGELOG.md)
+- [QA and audit guide](docs/QA.md)
+- [Contributing](CONTRIBUTING.md)
+- [Privacy](PRIVACY.md) · [Terms](TERMS.md) · [Security](SECURITY.md)
 
-## Identidade visual
+## Brand assets
 
-- [Logo vetorial (SVG)](assets/branding/argus-mark.svg)
-- [Avatar GitHub (PNG, 1024 × 1024)](assets/branding/argus-github-avatar.png)
-- [Imagem social GitHub (PNG, 1280 × 640)](assets/branding/argus-github-banner.png)
-- [Fonte vetorial da imagem social](assets/branding/argus-github-banner.svg)
+- [Vector logo (SVG)](assets/branding/argus-mark.svg)
+- [GitHub avatar (PNG, 1024 × 1024)](assets/branding/argus-github-avatar.png)
+- [English GitHub social image (PNG, 1280 × 640)](assets/branding/argus-github-banner-en.png)
+- [English social image vector source](assets/branding/argus-github-banner-en.svg)
 
-## Licença
+## License
 
-MIT — consulte [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE).
+
+---
+
+**Language:** **English** · [Português (Brasil)](README.pt-BR.md)
