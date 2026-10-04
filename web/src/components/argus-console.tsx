@@ -1,11 +1,43 @@
 "use client";
 
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { type FormEvent, type ReactNode, useEffect, useRef, useState } from "react";
 import { Activity, ArrowUp, LogOut, Mic, MicOff, Radio, ShieldCheck, Wifi, WifiOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Reactor } from "@/components/reactor";
 import { useArgusSocket } from "@/hooks/use-argus-socket";
 import { api, type Action, type User } from "@/lib/api";
+
+function MessageContent({ content }: { content: string }) {
+  const nodes: ReactNode[] = [];
+  const codeFence = /(`{3,})([^\r\n]*)\r?\n([\s\S]*?)\r?\n\1(?=\r?\n|$)/g;
+  let cursor = 0;
+
+  for (const match of content.matchAll(codeFence)) {
+    const start = match.index ?? cursor;
+    const label = match[2].trim();
+    if (start > cursor) {
+      const text = content.slice(cursor, start).replace(/\n+$/, "");
+      if (text) nodes.push(<p key={`text-${start}`}>{text}</p>);
+    }
+    nodes.push(
+      <pre
+        className="message-code"
+        data-language={label || "source"}
+        aria-label={`${label || "Generated"} source code`}
+        tabIndex={0}
+        key={`code-${start}`}
+      >
+        <code>{match[3]}</code>
+      </pre>,
+    );
+    cursor = start + match[0].length;
+  }
+
+  if (cursor === 0) return <div className="message-content"><p>{content}</p></div>;
+  const trailingText = content.slice(cursor).replace(/^\n+/, "");
+  if (trailingText) nodes.push(<p key={`text-${cursor}`}>{trailingText}</p>);
+  return <div className="message-content">{nodes}</div>;
+}
 
 export function ArgusConsole({ user, onSignOut }: { user: User; onSignOut: () => void }) {
   const live = useArgusSocket();
@@ -43,7 +75,7 @@ export function ArgusConsole({ user, onSignOut }: { user: User; onSignOut: () =>
             ) : live.messages.map((message) => (
               <article key={message.id} className={`message message-${message.role}`}>
                 <div><span>{message.role === "assistant" ? "ARGUS" : message.role === "user" ? "YOU" : "SYSTEM"}</span><time>{new Date(message.at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</time></div>
-                <p>{message.content}</p>
+                <MessageContent content={message.content} />
               </article>
             ))}
             <div ref={logEnd} />

@@ -36,26 +36,49 @@ def _get_gemini(model: str = GEMINI_MODEL):
 
 def _clean_code(text: str) -> str:
     text = text.strip()
-    text = re.sub(r"^```[a-zA-Z]*\n?", "", text)
-    text = re.sub(r"\n?```$", "", text)
+    text = re.sub(r"^```[^\r\n]*\r?\n?", "", text)
+    text = re.sub(r"\r?\n?```$", "", text)
     return text.strip()
 
 
-def _resolve_save_path(output_path: str, language: str) -> Path:
+def _resolve_save_path(output_path: str, language: str, file_extension: str = "") -> Path:
     ext_map = {
         "python": ".py", "py": ".py",
-        "javascript": ".js", "js": ".js",
-        "typescript": ".ts", "ts": ".ts",
-        "html": ".html", "css": ".css",
-        "java": ".java", "cpp": ".cpp", "c": ".c",
-        "bash": ".sh", "shell": ".sh", "powershell": ".ps1",
-        "sql": ".sql", "json": ".json", "rust": ".rs", "go": ".go",
+        "javascript": ".js", "js": ".js", "node.js": ".js",
+        "typescript": ".ts", "ts": ".ts", "jsx": ".jsx", "tsx": ".tsx",
+        "html": ".html", "css": ".css", "scss": ".scss", "sass": ".sass", "less": ".less",
+        "java": ".java", "c": ".c", "c++": ".cpp", "cpp": ".cpp", "cxx": ".cpp",
+        "c#": ".cs", "csharp": ".cs", "f#": ".fs", "fsharp": ".fs",
+        "objective-c": ".m", "objective-c++": ".mm", "kotlin": ".kt", "kotlin script": ".kts",
+        "swift": ".swift", "go": ".go", "rust": ".rs", "ruby": ".rb", "php": ".php",
+        "bash": ".sh", "shell": ".sh", "zsh": ".zsh", "fish": ".fish",
+        "powershell": ".ps1", "sql": ".sql", "pl/sql": ".sql", "tsql": ".sql",
+        "json": ".json", "jsonc": ".jsonc", "yaml": ".yaml", "yml": ".yml",
+        "toml": ".toml", "xml": ".xml", "markdown": ".md", "md": ".md",
+        "r": ".r", "julia": ".jl", "dart": ".dart", "scala": ".scala",
+        "haskell": ".hs", "elixir": ".ex", "erlang": ".erl", "lua": ".lua",
+        "perl": ".pl", "raku": ".raku", "ocaml": ".ml", "clojure": ".clj",
+        "groovy": ".groovy", "assembly": ".asm", "asm": ".asm", "fortran": ".f90",
+        "cobol": ".cob", "solidity": ".sol", "zig": ".zig", "nim": ".nim",
+        "crystal": ".cr", "pascal": ".pas", "visual basic": ".vb", "vb.net": ".vb",
+        "vhdl": ".vhd", "verilog": ".v", "systemverilog": ".sv",
+        "graphql": ".graphql", "protobuf": ".proto", "protocol buffers": ".proto",
     }
+    extension = str(file_extension or "").strip()
+    if extension:
+        extension = extension if extension.startswith(".") else f".{extension}"
+        if not re.fullmatch(r"\.[A-Za-z0-9][A-Za-z0-9._+-]{0,15}", extension):
+            raise ValueError("file_extension must be a simple extension such as .rs or .hc.")
+
+    language_key = " ".join(str(language or "python").casefold().split())
+    language_key = re.sub(r"(?:\s+|(?<=[+#]))(?:\d+(?:\.\d+)*|20\d{2})$", "", language_key)
+    inferred_extension = ext_map.get(language_key, extension or ".txt")
     if output_path:
         p = Path(output_path)
+        if not p.suffix:
+            p = p.with_suffix(extension or inferred_extension)
         return p if p.is_absolute() else DESKTOP / p
-    ext = ext_map.get((language or "python").lower(), ".py")
-    return DESKTOP / f"argus_code{ext}"
+    return DESKTOP / f"argus_code{extension or inferred_extension}"
 
 
 def _read_file(file_path: str) -> tuple[str, str]:
@@ -153,18 +176,21 @@ def _detect_intent(description: str, file_path: str, code: str) -> str:
 
     return "write"
 
-def _write(description: str, language: str, output_path: str, player=None) -> tuple[str, Path]:
-    lang  = language or "python"
+def _write(description: str, language: str, output_path: str, player=None, file_extension: str = "") -> tuple[str, Path]:
+    lang = " ".join(str(language or "Python").split())[:100]
     model = _get_gemini()
 
-    prompt = f"""You are an expert {lang} developer.
-Write clean, working, well-commented {lang} code for the description below.
+    prompt = f"""You are an expert software developer.
+Write clean, working, well-commented code in the exact requested language or dialect: {lang}.
+The language may be any programming language, including uncommon or legacy languages. Use its own syntax; do not silently translate it to another language.
 
 Rules:
 - Output ONLY the code. No explanation, no markdown, no backticks.
 - Add helpful inline comments.
 - Handle errors and edge cases properly.
 - Use modern best practices.
+- Follow the exact version, framework, platform, and library requested in the description.
+- Do not claim that the code was run, tested, or compiled.
 
 Description: {description}
 
@@ -172,7 +198,7 @@ Code:"""
 
     response = model.generate_content(prompt)
     code     = _clean_code(response.text)
-    path     = _resolve_save_path(output_path, lang)
+    path     = _resolve_save_path(output_path, lang, file_extension)
     _save_file(path, code, f"Generated {lang} code for request: {description}")
     return code, path
 
@@ -233,7 +259,7 @@ def _run_file(path: Path, args: list, timeout: int) -> str:
         return f"Execution error: {e}"
 
 
-def _build(description, language, output_path, args, timeout, speak=None, player=None) -> str:
+def _build(description, language, output_path, args, timeout, speak=None, player=None, file_extension="") -> str:
     if not description:
         return "Please describe what you want me to build, sir."
 
@@ -243,7 +269,7 @@ def _build(description, language, output_path, args, timeout, speak=None, player
     lang = language or "python"
 
     try:
-        code, path = _write(description, lang, output_path, player)
+        code, path = _write(description, lang, output_path, player, file_extension)
         print(f"[Code] ✅ Written: {path}")
     except Exception as e:
         msg = f"Could not write initial code: {e}"
@@ -286,13 +312,13 @@ def _build(description, language, output_path, args, timeout, speak=None, player
     if speak: speak(msg)
     return f"{msg}\n\nLast code saved to: {path}"
 
-def _write_action(description, language, output_path, player) -> str:
+def _write_action(description, language, output_path, player, file_extension="") -> str:
     if not description:
         return "Please describe what you want me to write, sir."
     if player:
         player.write_log("[Code] Writing code...")
     try:
-        code, path = _write(description, language, output_path, player)
+        code, path = _write(description, language, output_path, player, file_extension)
         print(f"[Code] ✅ Written: {path}")
         return f"Code written. Saved to: {path}\n\nPreview:\n{_preview(code)}"
     except Exception as e:
@@ -374,7 +400,7 @@ def _run_action(file_path, args, timeout, player) -> str:
     return _run_file(p, args, timeout)
 
 
-def _optimize_action(file_path, code, language, output_path, player) -> str:
+def _optimize_action(file_path, code, language, output_path, player, file_extension="") -> str:
 
     if file_path and not code:
         code, err = _read_file(file_path)
@@ -413,7 +439,7 @@ Optimized code:"""
     if file_path:
         save_path = Path(file_path)
     else:
-        save_path = _resolve_save_path(output_path, lang)
+        save_path = _resolve_save_path(output_path, lang, file_extension)
 
     status = _save_file(save_path, optimized)
     print(f"[Code] ✅ Optimized: {save_path}")
@@ -544,13 +570,14 @@ def code_helper(
     code        = p.get("code", "").strip()
     args        = p.get("args", [])
     timeout     = int(p.get("timeout", 30))
+    file_extension = str(p.get("file_extension", "")).strip()
 
     if action == "auto":
         action = _detect_intent(description, file_path, code)
         print(f"[Code] 🤖 Auto-detected: {action}")
 
     if action == "write":
-        return _write_action(description, language, output_path, player)
+        return _write_action(description, language, output_path, player, file_extension)
 
     elif action == "edit":
         return _edit_action(
@@ -566,10 +593,10 @@ def code_helper(
         return _run_action(file_path, args, timeout, player)
 
     elif action == "build":
-        return _build(description, language, output_path, args, timeout, speak, player)
+        return _build(description, language, output_path, args, timeout, speak, player, file_extension)
 
     elif action == "optimize":
-        return _optimize_action(file_path, code, language, output_path, player)
+        return _optimize_action(file_path, code, language, output_path, player, file_extension)
 
     elif action == "screen_debug":
         return _screen_debug_action(description, file_path, player, speak)

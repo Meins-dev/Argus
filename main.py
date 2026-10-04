@@ -53,6 +53,7 @@ desktop_control = _lazy_action("actions.desktop", "desktop_control")
 browser_control = _lazy_action("actions.browser_control", "browser_control")
 file_controller = _lazy_action("actions.file_controller", "file_controller")
 code_helper = _lazy_action("actions.code_helper", "code_helper")
+code_generator = _lazy_action("actions.code_generator", "code_generator")
 dev_agent = _lazy_action("actions.dev_agent", "dev_agent")
 web_search_action = _lazy_action("actions.web_search", "web_search")
 computer_control = _lazy_action("actions.computer_control", "computer_control")
@@ -667,15 +668,34 @@ TOOL_DECLARATIONS = [
         }
     },
     {
+        "name": "code_generator",
+        "description": (
+            "Generates source code in any requested programming language, dialect, or DSL and returns it in the chat. "
+            "Accepts free-form language names, including uncommon languages. This tool only returns text: it never writes files, installs packages, or runs generated code. "
+            "Use for new code generation, including in hosted ARGUS."
+        ),
+        "parameters": {
+            "type": "OBJECT",
+            "properties": {
+                "description": {"type": "STRING", "description": "What the code should do"},
+                "language": {"type": "STRING", "description": "Any programming language or dialect, such as Rust, C++20, COBOL, SQL, or an uncommon DSL"},
+                "filename": {"type": "STRING", "description": "Optional target source filename; used only as generation context and never written by this tool"},
+                "constraints": {"type": "STRING", "description": "Optional version, framework, platform, library, or formatting requirements"},
+            },
+            "required": ["description", "language"]
+        }
+    },
+    {
         "name": "code_helper",
-        "description": "Writes, edits, explains, runs, or builds code files.",
+        "description": "On desktop, saves, edits, explains, runs, or builds local code files. For new code returned in chat or any hosted code generation, use code_generator. Run or build local code only when the user explicitly asks.",
         "parameters": {
             "type": "OBJECT",
             "properties": {
                 "action":      {"type": "STRING", "description": "write | edit | explain | run | build | auto (default: auto)"},
                 "description": {"type": "STRING", "description": "What the code should do or what change to make"},
-                "language":    {"type": "STRING", "description": "Programming language (default: python)"},
+                "language":    {"type": "STRING", "description": "Any programming language or dialect; defaults to Python only when none is specified"},
                 "output_path": {"type": "STRING", "description": "Where to save the file"},
+                "file_extension": {"type": "STRING", "description": "Optional source extension for uncommon languages, e.g. .hc or .p6; ignored when output_path already has an extension"},
                 "file_path":   {"type": "STRING", "description": "Path to existing file for edit/explain/run/build"},
                 "code":        {"type": "STRING", "description": "Raw code string for explain"},
                 "args":        {"type": "STRING", "description": "CLI arguments for run/build"},
@@ -1108,6 +1128,7 @@ TOOL_DECLARATIONS = [
 CLOUD_SAFE_ACTIONS = frozenset({
     "web_search",
     "deep_research",
+    "code_generator",
     "create_presentation",
     "flight_finder",
     "email_control",
@@ -1614,6 +1635,10 @@ class ArgusLive:
             elif name == "code_helper":
                 r = await asyncio.to_thread(lambda: code_helper(parameters=args, player=self.ui, speak=self.speak))
                 result = r or "Done."
+
+            elif name == "code_generator":
+                r = await asyncio.to_thread(lambda: code_generator(parameters=args))
+                result = r or "No code was generated."
 
             elif name == "dev_agent":
                 r = await asyncio.to_thread(lambda: dev_agent(parameters=args, player=self.ui, speak=self.speak))
