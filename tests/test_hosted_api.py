@@ -114,6 +114,7 @@ class HostedApiTests(unittest.TestCase):
         names = {action["name"] for action in actions}
         self.assertIn("web_search", names)
         self.assertNotIn("open_app", names)
+        self.assertNotIn("code_helper", names)
 
     def test_cloud_action_worker_keeps_tenant_context(self):
         import main
