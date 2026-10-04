@@ -113,6 +113,7 @@ class HostedApiTests(unittest.TestCase):
         actions = self.client.get("/actions", headers=self.headers).json()["actions"]
         names = {action["name"] for action in actions}
         self.assertIn("web_search", names)
+        self.assertIn("code_generator", names)
         self.assertNotIn("open_app", names)
         self.assertNotIn("code_helper", names)
 
@@ -133,6 +134,32 @@ class HostedApiTests(unittest.TestCase):
                 response = asyncio.run(argus._execute_tool(call))
 
         self.assertEqual(response.response["result"], self.user_id)
+
+    def test_cloud_code_generator_keeps_tenant_context(self):
+        import main
+        from core.tenant import get_current_user_id
+
+        argus = main.ArgusLive.__new__(main.ArgusLive)
+        argus.cloud_safe = True
+        argus.ui = SimpleNamespace(
+            set_state=lambda _state: None,
+            muted=False,
+        )
+        call = SimpleNamespace(
+            id="tenant-code-call",
+            name="code_generator",
+            args={"description": "print hello", "language": "Rust"},
+        )
+
+        with patch.object(
+            main,
+            "code_generator",
+            side_effect=lambda **_kwargs: f"tenant={get_current_user_id()}",
+        ):
+            with tenant_scope(self.user_id):
+                response = asyncio.run(argus._execute_tool(call))
+
+        self.assertEqual(response.response["result"], f"tenant={self.user_id}")
 
     def test_authenticated_websocket_streams_engine_events(self):
         raw_key = "AIza" + "B" * 35

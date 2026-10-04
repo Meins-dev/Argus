@@ -133,7 +133,10 @@ a { color: inherit; }
 .message > div { display: flex; justify-content: space-between; color: var(--dim); font-family: "JetBrains Mono Variable", monospace; font-size: .58rem; letter-spacing: .1em; }
 .message-assistant > div span { color: var(--cyan); }
 .message-user > div span { color: var(--success); }
-.message p { margin: .55rem 0 0; color: oklch(0.9 0.025 220); font-size: .79rem; line-height: 1.6; white-space: pre-wrap; }
+.message-content > p { margin: .55rem 0 0; color: oklch(0.9 0.025 220); font-size: .79rem; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
+.message-code { max-width: 100%; margin: .7rem 0 0; padding: .8rem .9rem; overflow: auto; border: 1px solid var(--line); border-radius: .55rem; background: oklch(0.075 0.012 238); }
+.message-code::before { display: block; margin-bottom: .45rem; color: var(--cyan); font: .62rem/1.4 "JetBrains Mono Variable", monospace; text-transform: uppercase; content: attr(data-language); }
+.message-code code { color: oklch(0.9 0.025 220); font: .73rem/1.55 "JetBrains Mono Variable", monospace; white-space: pre; }
 .state-caption { position: absolute; top: 1.4rem; display: flex; align-items: center; gap: .5rem; color: var(--dim); font-family: "JetBrains Mono Variable", monospace; font-size: .6rem; letter-spacing: .12em; }
 .state-dot { width: .4rem; aspect-ratio: 1; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 .6rem var(--cyan); }
 
